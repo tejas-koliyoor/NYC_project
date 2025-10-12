@@ -1,7 +1,7 @@
-# Data contract — nyc_taxi_yellow_tripdata (mirror)
+# Data contract — nyc_taxi_yellow_tripdata
 
 External source: NYC TLC Yellow Taxi Trip Records (Trip Data page + Data Dictionary)
-Internal steward: Your Name (ml‑data‑team)  • Slack: #ml-data • Email: you@company.com
+Internal steward: TEJAS KOLIYOOR VARANASHI (ml‑data‑team)  • Slack: #ml-data • Email: tejaskoliyoorvaranashi@gmail.com
 
 Refresh & SLA
 - Mirror cadence: monthly (previous month)
