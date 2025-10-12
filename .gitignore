@@ -1,0 +1,8 @@
+.pytest_cache/
+__pycache__/
+models/
+features/online/
+.mlflow/
+.env
+*.pyc
+.DS_Store
