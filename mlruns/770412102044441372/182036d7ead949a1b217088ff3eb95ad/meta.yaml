@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/Tejas%20K%20V/NYC_Project/mlruns/770412102044441372/182036d7ead949a1b217088ff3eb95ad/artifacts
+end_time: 1760606132499
+entry_point_name: ''
+experiment_id: '770412102044441372'
+lifecycle_stage: active
+run_id: 182036d7ead949a1b217088ff3eb95ad
+run_name: baseline-rf
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760606129506
+status: 3
+tags: []
+user_id: TejasKV

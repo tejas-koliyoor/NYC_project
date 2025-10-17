@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/Tejas%20K%20V/NYC_Project/mlruns/770412102044441372/models/m-fdf5e2d782c44208a9b42a85866cf155/artifacts
+creation_timestamp: 1760605841920
+experiment_id: '770412102044441372'
+last_updated_timestamp: 1760605846300
+model_id: m-fdf5e2d782c44208a9b42a85866cf155
+model_type: null
+name: model
+source_run_id: f13d9485f288493c8c73ce5e296e203c
+status: 2
+status_message: null

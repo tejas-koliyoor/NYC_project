@@ -1,0 +1,30 @@
+{
+  "feature_names": [
+    "trip_distance",
+    "passenger_count",
+    "pickup_hour",
+    "pickup_dow",
+    "PU_id",
+    "DO_id",
+    "vendor_1",
+    "vendor_2",
+    "vendor_6",
+    "vendor_7",
+    "rate_1",
+    "rate_2",
+    "rate_3",
+    "rate_4",
+    "rate_5",
+    "rate_6",
+    "rate_99",
+    "pay_0",
+    "pay_1",
+    "pay_2",
+    "pay_3",
+    "pay_4",
+    "pay_5",
+    "pay_6"
+  ],
+  "n_features": 24,
+  "notes": "Order matters for serving; keep in sync with src/features.py"
+}
