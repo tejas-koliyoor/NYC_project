@@ -1,17 +1,20 @@
 # TODO: implement loaders & schema checks based on the contract
 from __future__ import annotations
+
 from pathlib import Path
-from typing import Optional, Set, Tuple
+from typing import Optional, Set
+
 import pandas as pd
 
 from .validator import validate_dataframe
 
 # ---- Public API (used by training & batch scoring) ----
 
+
 def load_month(
     path: str | Path,
-    month: Optional[str] = None,                 # "YYYY-MM" for freshness window
-    taxi_zone_ids: Optional[Set[int]] = None,   # pass known IDs if you have them
+    month: Optional[str] = None,  # "YYYY-MM" for freshness window
+    taxi_zone_ids: Optional[Set[int]] = None,  # pass known IDs if you have them
 ) -> pd.DataFrame:
     """
     Load one month of NYC Yellow Taxi data (CSV or Parquet),
@@ -42,4 +45,3 @@ def add_label(df: pd.DataFrame) -> pd.DataFrame:
     out = df.copy()
     out["HIGH_TOTAL"] = (out["total_amount"].fillna(0.0) >= 40.0).astype(int)
     return out
-

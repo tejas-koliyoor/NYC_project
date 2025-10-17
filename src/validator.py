@@ -1,9 +1,12 @@
 from __future__ import annotations
-import pandas as pd
-import numpy as np
+
 from dataclasses import dataclass
-from typing import Optional, Dict, Any
-from .contract_spec import COLUMNS, REQUIRED, coerce_dtype, apply_rule
+from typing import Dict, Optional
+
+import pandas as pd
+
+from .contract_spec import COLUMNS, REQUIRED, apply_rule, coerce_dtype
+
 
 @dataclass
 class ValidationReport:
@@ -15,9 +18,10 @@ class ValidationReport:
     freshness_ok: Optional[bool] = None
     latest_dropoff: Optional[str] = None
 
+
 def validate_dataframe(
     df: pd.DataFrame,
-    month: Optional[str] = None,        # e.g., "2025-03"
+    month: Optional[str] = None,  # e.g., "2025-03"
     taxi_zone_ids: Optional[set[int]] = None,  # pass known IDs if you have them
 ) -> tuple[pd.DataFrame, ValidationReport]:
     """
@@ -26,7 +30,7 @@ def validate_dataframe(
     Drops rows only when required columns are missing or joinability fails.
     """
     df = df.copy()
-    original_rows = len(df)
+    len(df)
 
     # 1) Required columns present
     missing = [c for c in REQUIRED if c not in df.columns]
@@ -58,7 +62,7 @@ def validate_dataframe(
         badmask = badmask.reindex(df.index, fill_value=False)
         count_bad = int(badmask.sum())
         if count_bad > 0:
-            is_anomaly = (is_anomaly.reindex(df.index, fill_value=False) | badmask)
+            is_anomaly = is_anomaly.reindex(df.index, fill_value=False) | badmask
             anomalies_by_rule[col.name] = count_bad
 
     # 4) Joinability checks (if zone set supplied)
@@ -72,11 +76,17 @@ def validate_dataframe(
             is_anomaly = is_anomaly.loc[df.index]
 
     # 5) Duration + additional rules
-    dur = (df["tpep_dropoff_datetime"] - df["tpep_pickup_datetime"]).dt.total_seconds() / 60.0
+    dur = (
+        df["tpep_dropoff_datetime"] - df["tpep_pickup_datetime"]
+    ).dt.total_seconds() / 60.0
     df["duration_minutes"] = pd.to_numeric(dur, errors="coerce").round().astype("Int64")
-    dur_bad = df["duration_minutes"].isna() | (df["duration_minutes"] < 1) | (df["duration_minutes"] > 720)
+    dur_bad = (
+        df["duration_minutes"].isna()
+        | (df["duration_minutes"] < 1)
+        | (df["duration_minutes"] > 720)
+    )
     if dur_bad.any():
-        is_anomaly = (is_anomaly | dur_bad)
+        is_anomaly = is_anomaly | dur_bad
         anomalies_by_rule["duration_minutes"] = int(dur_bad.sum())
 
     df["is_anomaly"] = is_anomaly.astype(int)
@@ -90,8 +100,10 @@ def validate_dataframe(
             # consider fresh if any dropoff falls within that YYYY-MM month window
             y, m = month.split("-")
             start = pd.Timestamp(f"{y}-{m}-01", tz="UTC")
-            end = (start + pd.offsets.MonthBegin(1))
-            in_window = (df["tpep_dropoff_datetime"] >= start) & (df["tpep_dropoff_datetime"] < end)
+            end = start + pd.offsets.MonthBegin(1)
+            in_window = (df["tpep_dropoff_datetime"] >= start) & (
+                df["tpep_dropoff_datetime"] < end
+            )
             freshness_ok = bool(in_window.any())
 
     report = ValidationReport(
@@ -105,10 +117,15 @@ def validate_dataframe(
     )
     return df, report
 
+
 # --- CLI entrypoint (optional) ---
 if __name__ == "__main__":
-    import argparse, json, sys
-    parser = argparse.ArgumentParser(description="Validate NYC Yellow Taxi data against the contract.")
+    import argparse
+    import json
+
+    parser = argparse.ArgumentParser(
+        description="Validate NYC Yellow Taxi data against the contract."
+    )
     parser.add_argument("path", help="CSV or Parquet file")
     parser.add_argument("--month", help="YYYY-MM expected month window", default=None)
     args = parser.parse_args()

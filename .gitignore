@@ -1,8 +1,16 @@
-.pytest_cache/
-__pycache__/
-models/
-features/online/
-.mlflow/
-.env
-*.pyc
+﻿>> # Python
+>> __pycache__/
+>> *.pyc
+.venv/
+mlruns/data/*
+!data/nyc_taxi_2025-03.csv
+*.env
+*.pem
+*.key
+*.token
+github new first token.txt
 .DS_Store
+Thumbs.db
+
+dist/
+build/
