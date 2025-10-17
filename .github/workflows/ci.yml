@@ -1,7 +1,27 @@
-- name: Lint
-  run: |
-    flake8 src tests \
-      --max-line-length 120 \
-      --extend-ignore E203,W503 \
-      --exclude .venv,mlruns,__pycache__,.git \
-      --per-file-ignores 'tests/*:E501'
+name: ci
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install --upgrade pip
+      - run: pip install -r requirements.txt
+      - run: pip install flake8 pytest
+      - name: Lint
+        run: |
+          flake8 src tests \
+            --max-line-length 120 \
+            --extend-ignore E203,W503 \
+            --exclude .venv,mlruns,__pycache__,.git \
+            --per-file-ignores 'tests/*:E501'
+      - name: Test
+        env:
+          PYTHONPATH: .
+        run: pytest -q
