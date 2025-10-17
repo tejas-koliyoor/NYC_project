@@ -2,31 +2,27 @@
 from __future__ import annotations
 
 import argparse
-from pathlib import Path
 import json
-import os
-
-import numpy as np
-import pandas as pd
+from pathlib import Path
 
 import mlflow
 import mlflow.sklearn
-
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import (
-    roc_auc_score, average_precision_score,
-    accuracy_score, precision_score, recall_score, f1_score
-)
+import numpy as np
+import pandas as pd
+from joblib import dump
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (accuracy_score, average_precision_score, f1_score,
+                             precision_score, recall_score, roc_auc_score)
+from sklearn.model_selection import train_test_split
 
-from joblib import dump
-
-from src.data import load_month, add_label
+from src.data import add_label, load_month
 from src.features import build_features
 
 
-def compute_metrics(y_true: np.ndarray, y_prob: np.ndarray, threshold: float = 0.5) -> dict:
+def compute_metrics(
+    y_true: np.ndarray, y_prob: np.ndarray, threshold: float = 0.5
+) -> dict:
     y_pred = (y_prob >= threshold).astype(int)
     return {
         "roc_auc": float(roc_auc_score(y_true, y_prob)),
@@ -146,12 +142,24 @@ def train_once(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Train baseline model with MLflow logging.")
-    parser.add_argument("--data", required=True, help="Path to CSV or Parquet month file")
-    parser.add_argument("--month", required=False, help="YYYY-MM expected month for freshness check")
-    parser.add_argument("--experiment", default="nyc-taxi-high-total", help="MLflow experiment name")
-    parser.add_argument("--algo", choices=["rf", "logreg"], default="rf", help="Algorithm")
-    parser.add_argument("--model-name", default="model", help="Base name for saved model file")
+    parser = argparse.ArgumentParser(
+        description="Train baseline model with MLflow logging."
+    )
+    parser.add_argument(
+        "--data", required=True, help="Path to CSV or Parquet month file"
+    )
+    parser.add_argument(
+        "--month", required=False, help="YYYY-MM expected month for freshness check"
+    )
+    parser.add_argument(
+        "--experiment", default="nyc-taxi-high-total", help="MLflow experiment name"
+    )
+    parser.add_argument(
+        "--algo", choices=["rf", "logreg"], default="rf", help="Algorithm"
+    )
+    parser.add_argument(
+        "--model-name", default="model", help="Base name for saved model file"
+    )
     args = parser.parse_args()
 
     # Load & validate month (freshness if provided)
