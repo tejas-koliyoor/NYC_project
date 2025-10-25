@@ -1,0 +1,62 @@
+{
+  "2_2025-03-01T08:00:00Z_142_236": {
+    "trip_distance": 3.2,
+    "fare_amount": 12.5,
+    "total_amount": 18.55,
+    "duration_min": 12.0,
+    "amount_per_mile": 5.7969,
+    "hour_of_day": 8,
+    "day_of_week": 5,
+    "is_weekend": 1,
+    "payment_type_credit": 1,
+    "payment_type_cash": 0
+  },
+  "2_2025-03-02T09:15:00Z_100_236": {
+    "trip_distance": 10.5,
+    "fare_amount": 35.0,
+    "total_amount": 38.55,
+    "duration_min": 30.0,
+    "amount_per_mile": 3.6714,
+    "hour_of_day": 9,
+    "day_of_week": 6,
+    "is_weekend": 1,
+    "payment_type_credit": 0,
+    "payment_type_cash": 1
+  },
+  "7_2025-03-06T13:05:00Z_148_236": {
+    "trip_distance": 18.0,
+    "fare_amount": 32.0,
+    "total_amount": 44.05,
+    "duration_min": 45.0,
+    "amount_per_mile": 2.4472,
+    "hour_of_day": 13,
+    "day_of_week": 3,
+    "is_weekend": 0,
+    "payment_type_credit": 1,
+    "payment_type_cash": 0
+  },
+  "2_2025-03-03T10:00:00Z_142_236": {
+    "trip_distance": 7.5,
+    "fare_amount": 28.0,
+    "total_amount": 40.05,
+    "duration_min": 25.0,
+    "amount_per_mile": 5.34,
+    "hour_of_day": 10,
+    "day_of_week": 0,
+    "is_weekend": 0,
+    "payment_type_credit": 1,
+    "payment_type_cash": 0
+  },
+  "6_2025-03-05T07:10:00Z_236_140": {
+    "trip_distance": 12.0,
+    "fare_amount": 28.5,
+    "total_amount": 38.55,
+    "duration_min": 30.0,
+    "amount_per_mile": 3.2125,
+    "hour_of_day": 7,
+    "day_of_week": 2,
+    "is_weekend": 0,
+    "payment_type_credit": 1,
+    "payment_type_cash": 0
+  }
+}
