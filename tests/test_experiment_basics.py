@@ -1,4 +1,4 @@
-﻿from src.experiments import assign_arm, sample_size_two_props, summarize_churn
+from src.experiments import assign_arm, sample_size_two_props, summarize_churn
 
 
 def test_assign_arm_is_deterministic_and_balanced():
