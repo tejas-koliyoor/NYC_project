@@ -1,4 +1,4 @@
-import os
+﻿import os
 import json
 import re
 
@@ -11,3 +11,4 @@ def test_online_keys_are_iso_z():
     pat = re.compile(r'^\d+_\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z_\d+_\d+$')
     for k in data.keys():
         assert pat.match(k), f'Bad key format: {k}'
+
