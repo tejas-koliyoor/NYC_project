@@ -7,7 +7,6 @@ def assign_arm(entity_id: str, experiment_id: str) -> int:
     """Deterministic 50/50 assignment. Return 0 (control) or 1 (treatment)."""
     key = f"{entity_id}|{experiment_id}".encode("utf-8")
     h = hashlib.sha256(key).hexdigest()
-    # take a small hex slice -> int -> mod 2
     return int(h[-2:], 16) % 2
 
 
@@ -21,20 +20,19 @@ def sample_size_two_props(
 
     pbar = 0.5 * (p0 + p1)
 
-    # two-sided alpha: use z for alpha/2
-    # common engineering constants for quick calcs:
-    z_alpha = 1.96 if abs(alpha - 0.05) < 1e-9 else abs(
-        math.sqrt(2) * math.erfcinv(alpha)
-    )
-    # 80% power -> z_beta ~ 0.84
-    z_beta = 0.84 if abs(power - 0.80) < 1e-9 else abs(
-        math.sqrt(2) * math.erfcinv(2 * (1 - power))
-    )
+    # Two-sided alpha ~0.05 -> 1.96; 80% power -> 0.84 (engineering constants)
+    z_alpha = 1.96
+    z_beta = 0.84
 
     term1 = z_alpha * math.sqrt(2 * pbar * (1 - pbar))
     term2 = z_beta * math.sqrt(p0 * (1 - p0) + p1 * (1 - p1))
     n = ((term1 + term2) ** 2) / (delta ** 2)
     return math.ceil(n)
+
+
+def _phi(z: float) -> float:
+    """Standard normal CDF via erf."""
+    return 0.5 * (1.0 + math.erf(z / math.sqrt(2.0)))
 
 
 def summarize_churn(
@@ -49,16 +47,9 @@ def summarize_churn(
     p_t = sum(treatment) / n_t
     diff = p_t - p_c
 
-    se = math.sqrt(
-        (p_c * (1 - p_c)) / n_c + (p_t * (1 - p_t)) / n_t
-    )
+    se = math.sqrt((p_c * (1 - p_c)) / n_c + (p_t * (1 - p_t)) / n_t)
 
-    # standard normal CDF via erf
-    phi = lambda z: 0.5 * (1.0 + math.erf(z / math.sqrt(2.0)))
-    # z critical for two-sided alpha
-    zcrit = 1.96 if abs(alpha - 0.05) < 1e-9 else abs(
-        math.sqrt(2) * math.erfcinv(alpha)
-    )
+    zcrit = 1.96  # two-sided 95%
 
     if se == 0:
         z = 0.0
@@ -66,7 +57,7 @@ def summarize_churn(
         ci_low, ci_high = diff, diff
     else:
         z = diff / se
-        p_value = 2.0 * (1.0 - phi(abs(z)))
+        p_value = 2.0 * (1.0 - _phi(abs(z)))
         ci_low = diff - zcrit * se
         ci_high = diff + zcrit * se
 
