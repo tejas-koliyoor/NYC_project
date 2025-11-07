@@ -1,0 +1,68 @@
+{
+    "title": "NYC Taxi API",
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "panels": [
+        {
+            "type": "stat",
+            "title": "Model Loaded",
+            "targets": [
+                {
+                    "expr": "model_loaded"
+                }
+            ],
+            "gridPos": {
+                "x": 0,
+                "y": 0,
+                "w": 6,
+                "h": 6
+            }
+        },
+        {
+            "type": "timeSeries",
+            "title": "Request Rate (/predict)",
+            "targets": [
+                {
+                    "expr": "rate(prediction_requests_total[1m])"
+                }
+            ],
+            "gridPos": {
+                "x": 6,
+                "y": 0,
+                "w": 18,
+                "h": 6
+            }
+        },
+        {
+            "type": "timeSeries",
+            "title": "Error Rate (/predict)",
+            "targets": [
+                {
+                    "expr": "rate(prediction_errors_total[1m])"
+                }
+            ],
+            "gridPos": {
+                "x": 0,
+                "y": 6,
+                "w": 12,
+                "h": 8
+            }
+        },
+        {
+            "type": "timeSeries",
+            "title": "Latency p95 (s)",
+            "targets": [
+                {
+                    "expr": "histogram_quantile(0.95, sum(rate(prediction_request_latency_seconds_bucket[5m])) by (le))"
+                }
+            ],
+            "gridPos": {
+                "x": 12,
+                "y": 6,
+                "w": 12,
+                "h": 8
+            }
+        }
+    ]
+}
