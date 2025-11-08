@@ -22,3 +22,20 @@ Artifacts map to the 30‑day sprint:
 - `runbooks/` — days 13–14
 - `governance/` — day 15
 - `model_card.md`, demo assets — days 16–18
+
+## Day 11 — Kubernetes Deployment
+
+This project includes `k8s/deployment.yaml` defining:
+- A 2-replica Deployment for the NYC Taxi API
+- A ClusterIP Service exposing port 8000
+- Health probes on `/health`
+
+### Run locally on Kind
+
+```bash
+kind create cluster --name nyc-taxi
+docker build -t nyc-taxi-api:latest .
+kind load docker-image nyc-taxi-api:latest --name nyc-taxi
+kubectl apply -f k8s/deployment.yaml
+kubectl port-forward svc/nyc-taxi-api 8000:8000
+

@@ -2,29 +2,64 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nyc-taxi-api
+  labels:
+    app: nyc-taxi-api
 spec:
   replicas: 2
   selector:
-    matchLabels: { app: nyc-taxi-api }
+    matchLabels:
+      app: nyc-taxi-api
   template:
     metadata:
-      labels: { app: nyc-taxi-api }
+      labels:
+        app: nyc-taxi-api
     spec:
       containers:
-        - name: api
-          image: ghcr.io/you/nyc-taxi-api:v0
-          ports: [{ containerPort: 8000 }]
+        - name: nyc-taxi-api
+          # TODO: replace with your real image in a registry for real deployments
+          # e.g. ghcr.io/tejas-koliyoor/nyc-taxi-api:latest
+          image: nyc-taxi-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+          env:
+            # Optional: for model path or config if you change it later
+            - name: MODEL_PATH
+              value: "/app/artifacts/model.joblib"
           readinessProbe:
-            httpGet: { path: /health, port: 8000 }
-            initialDelaySeconds: 5
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
             periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: nyc-taxi-api-svc
+  name: nyc-taxi-api
+  labels:
+    app: nyc-taxi-api
 spec:
-  selector: { app: nyc-taxi-api }
+  type: ClusterIP
+  selector:
+    app: nyc-taxi-api
   ports:
-    - port: 80
+    - name: http
+      port: 8000
       targetPort: 8000

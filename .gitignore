@@ -18,3 +18,14 @@ build/
 mlruns/
 __pycache__/
 
+.venv/
+__pycache__/
+mlruns/
+*.ipynb_checkpoints/
+
+artifacts/model.joblib
+artifacts/*.pkl
+.venv/
+__pycache__/
+mlruns/
+
