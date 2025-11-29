@@ -1,0 +1,26 @@
+version: 1
+entity:
+  name: trip
+  key: vendor_pickup_pu_do
+  format: "{VendorID}_{tpep_pickup_datetime}_{PULocationID}_{DOLocationID}"
+  event_ts: tpep_pickup_datetime
+  ttl_days: 30
+features:
+  - { name: trip_distance,        dtype: float }
+  - { name: fare_amount,          dtype: float }
+  - { name: total_amount,         dtype: float }
+  - { name: duration_min,         dtype: float }
+  - { name: amount_per_mile,      dtype: float }
+  - { name: hour_of_day,          dtype: int }
+  - { name: day_of_week,          dtype: int }
+  - { name: is_weekend,           dtype: int }
+  - { name: payment_type_credit,  dtype: int }
+  - { name: payment_type_cash,    dtype: int }
+offline: { format: parquet, partitioning: by_month }
+online:  { format: json,    sample_size: 5 }
+source:
+  table: raw_ext.nyc_taxi_yellow_tripdata
+  month: "2025-03"
+notes: |
+  Minimal feature view derived from TLC trip records.
+  Same features used offline (training) and online (serving).

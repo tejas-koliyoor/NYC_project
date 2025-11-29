@@ -1,0 +1,17 @@
+{
+  "counts": {
+    "train": 4,
+    "test": 2,
+    "positives_test": 1,
+    "negatives_test": 1
+  },
+  "metrics": {
+    "roc_auc": 0.0,
+    "pr_auc": 0.5,
+    "accuracy": 0.5,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "threshold": 0.5
+  }
+}

@@ -1,0 +1,12 @@
+﻿[
+    "trip_distance",
+    "fare_amount",
+    "total_amount",
+    "duration_min",
+    "amount_per_mile",
+    "hour_of_day",
+    "day_of_week",
+    "is_weekend",
+    "payment_type_credit",
+    "payment_type_cash"
+]

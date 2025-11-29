@@ -1,39 +1,52 @@
+from __future__ import annotations
+
+import json
+import os
+import pickle
+from typing import List
+
 from fastapi import FastAPI
-from fastapi.responses import Response
-from prometheus_client import (CONTENT_TYPE_LATEST, Counter, Histogram,
-                               generate_latest)
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
-app = FastAPI(title="NYC Taxi Inference API (skeleton)")
+MODEL_PATH = os.getenv("MODEL_PATH", "models/model.pkl")
+FEAT_NAMES_PATH = os.getenv("FEAT_NAMES_PATH", "models/feature_names.json")
 
-REQUESTS = Counter("requests_total", "Total requests", ["endpoint"])
-LATENCY = Histogram("request_latency_seconds", "Request latency", ["endpoint"])
+app = FastAPI(title="NYC Taxi Model API")
 
-
-class Payload(BaseModel):
-    # placeholder schema; adjust after you define features
-    feature1: float = Field(ge=0)
-    feature2: float = Field(ge=0)
+_model = None
+_feature_names: List[str] | None = None
 
 
-@app.get("/health")
-def health():
-    REQUESTS.labels("/health").inc()
-    return {"status": "ok", "model_loaded": False}
+def _ensure_loaded() -> None:
+    """Load model + feature names on demand (NOT at startup)."""
+    global _model, _feature_names
+
+    if _model is None:
+        # try joblib first (works for many sklearn dumps), fall back to pickle
+        try:
+            from joblib import load as joblib_load
+            _model = joblib_load(MODEL_PATH)
+        except Exception:
+            with open(MODEL_PATH, "rb") as f:
+                _model = pickle.load(f)
+
+    if _feature_names is None:
+        with open(FEAT_NAMES_PATH, "r", encoding="utf-8") as f:
+            names = json.load(f)
+        if not isinstance(names, list) or not all(isinstance(x, str) for x in names):
+            raise RuntimeError("feature_names.json must be a JSON list of strings")
+        _feature_names = names
 
 
-@app.get("/metrics")
-def metrics():
-    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
+class PredictRequest(BaseModel):
+    features: List[float]
 
-
-@app.post("/predict")
-def predict(p: Payload):
-    import time
-
-    start = time.time()
-    REQUESTS.labels("/predict").inc()
-    # placeholder score for skeleton
-    score = float(p.feature1 * 0.1 + p.feature2 * 0.2)
-    LATENCY.labels("/predict").observe(time.time() - start)
-    return {"score": score}
+@app.get("/meta")
+def meta():
+    return {
+        "model_path": MODEL_PATH,
+        "feat_names_path": FEAT_NAMES_PATH,
+        "n_features_expected": len(FEATURE_NAMES) if FEATURE_NAMES else None,
+        "model_n_features_in_": getattr(MODEL, "n_features_in_", None),
+        "feature_names": FEATURE_NAMES,
+    }

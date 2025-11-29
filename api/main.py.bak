@@ -1,0 +1,140 @@
+# api/main.py
+
+
+from __future__ import annotations
+import json
+import os
+import pickle
+from joblib import load as joblib_load
+from datetime import datetime, timezone
+from typing import List, Optional
+
+import pandas as pd
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field, validator
+
+from src.features import build_features
+
+APP_PORT = int(os.getenv("APP_PORT", "8000"))
+MODEL_PATH = os.getenv("MODEL_PATH", "models/model.pkl")
+FEAT_NAMES_PATH = os.getenv("FEAT_NAMES_PATH",
+                            "models/feature_names.json")
+MODEL_VERSION = os.getenv("MODEL_VERSION", "v1")
+
+app = FastAPI(title="NYC Taxi Model API", version=MODEL_VERSION)
+
+# --------- request schema (raw event) ---------
+class PredictRequest(BaseModel):
+    VendorID: int = Field(..., ge=-1)
+    tpep_pickup_datetime: str
+    tpep_dropoff_datetime: str
+    PULocationID: int
+    DOLocationID: int
+    passenger_count: Optional[int] = None
+    trip_distance: Optional[float] = None
+    RatecodeID: Optional[int] = None
+    store_and_fwd_flag: Optional[str] = None
+    payment_type: Optional[int] = None
+    fare_amount: Optional[float] = None
+    extra: Optional[float] = None
+    mta_tax: Optional[float] = None
+    tip_amount: Optional[float] = None
+    tolls_amount: Optional[float] = None
+    improvement_surcharge: Optional[float] = None
+    congestion_surcharge: Optional[float] = None
+    total_amount: Optional[float] = None
+
+    @validator("tpep_pickup_datetime", "tpep_dropoff_datetime")
+    def _iso_z(cls, v: str) -> str:
+        # normalize ISO Z (e.g., '2025-03-01T08:00:00Z')
+        try:
+            if v.endswith("Z"):
+                dt = datetime.strptime(v, "%Y-%m-%dT%H:%M:%SZ")
+                dt = dt.replace(tzinfo=timezone.utc)
+            else:
+                dt = datetime.fromisoformat(v)
+                if dt.tzinfo is None:
+                    dt = dt.replace(tzinfo=timezone.utc)
+                else:
+                    dt = dt.astimezone(timezone.utc)
+            return dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+        except Exception as e:
+            raise ValueError(f"bad timestamp '{v}': {e}") from e
+
+
+# --------- model + feature alignment at startup ---------
+class ModelBundle:
+    def __init__(self, model_path: str, feat_names_path: str) -> None:
+        # Try joblib first, then raw pickle
+        try:
+            self.model = joblib_load(model_path)
+        except Exception:
+            with open(model_path, "rb") as f:
+                self.model = pickle.load(f)
+
+        with open(feat_names_path, "r", encoding="utf-8") as f:
+            names = json.load(f)
+        if not isinstance(names, list):
+            raise ValueError("feature_names.json must be a JSON list of strings")
+        self.feature_names = names
+
+
+    def align(self, feats: pd.DataFrame) -> pd.DataFrame:
+        if self.feat_names is None:
+            # intersect as a safe fallback
+            return feats
+        missing = [c for c in self.feat_names if c not in feats.columns]
+        if missing:
+            raise ValueError(f"missing features: {missing}")
+        # order exactly as training
+        return feats[self.feat_names]
+
+
+bundle: Optional[ModelBundle] = None
+
+
+@app.on_event("startup")
+def _load_model() -> None:
+    global bundle
+    try:
+        bundle = ModelBundle(MODEL_PATH, FEAT_NAMES_PATH)
+    except FileNotFoundError as e:
+        raise RuntimeError(f"model not found: {e}") from e
+
+
+# --------- routes ---------
+@app.get("/health")
+def health():
+    return {"status": "ok", "model_version": MODEL_VERSION}
+
+
+@app.post("/predict")
+def predict(req: PredictRequest):
+    assert bundle is not None, "model bundle not loaded"
+    # convert request to one-row DataFrame with expected raw columns
+    raw = pd.DataFrame([req.dict()])
+    # build features using the same logic as training
+    feats = build_features(raw)
+    # drop non-feature identifiers if present
+    for c in ["entity_key", "event_ts"]:
+        if c in feats.columns:
+            feats = feats.drop(columns=[c])
+
+    # align to training order
+    feats = bundle.align(feats)
+
+    # predict (handles binary or regression)
+    mdl = bundle.model
+    if hasattr(mdl, "predict_proba"):
+        prob = float(mdl.predict_proba(feats)[:, 1][0])
+        out = {"probability": prob}
+    else:
+        pred = float(mdl.predict(feats)[0])
+        out = {"prediction": pred}
+
+    return {
+        "ok": True,
+        "model_version": MODEL_VERSION,
+        "features_used": list(feats.columns),
+        "result": out,
+    }
