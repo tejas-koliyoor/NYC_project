@@ -7,6 +7,13 @@ from typing import List
 
 from fastapi import FastAPI
 from pydantic import BaseModel
+from .model import (
+    load_pipeline,
+    MODEL,
+    FEATURE_NAMES,
+    MODEL_PATH,
+    FEAT_NAMES_PATH,
+)
 
 MODEL_PATH = os.getenv("MODEL_PATH", "models/model.pkl")
 FEAT_NAMES_PATH = os.getenv("FEAT_NAMES_PATH", "models/feature_names.json")
