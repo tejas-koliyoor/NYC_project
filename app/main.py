@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Response
-from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
+from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
 from src.privacy import scrub_pii_from_record
 from .schemas import HealthResponse, PredictRequest, PredictResponse, Prediction
 from .model import load_pipeline, MODEL, FEATURE_NAMES
