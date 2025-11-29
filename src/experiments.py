@@ -26,7 +26,7 @@ def sample_size_two_props(
 
     term1 = z_alpha * math.sqrt(2 * pbar * (1 - pbar))
     term2 = z_beta * math.sqrt(p0 * (1 - p0) + p1 * (1 - p1))
-    n = ((term1 + term2) ** 2) / (delta ** 2)
+    n = ((term1 + term2) ** 2) / (delta**2)
     return math.ceil(n)
 
 

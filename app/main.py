@@ -11,7 +11,10 @@ app = FastAPI()
 # Prometheus metrics
 PREDICTION_REQUESTS = Counter("prediction_requests_total", "Total prediction requests")
 PREDICTION_ERRORS = Counter("prediction_errors_total", "Prediction errors")
-PREDICTION_LATENCY = Histogram("prediction_request_latency_seconds", "Latency of prediction requests")
+PREDICTION_LATENCY = Histogram(
+    "prediction_request_latency_seconds", "Latency of prediction requests"
+)
+
 
 @app.get("/health", response_model=HealthResponse)
 def health() -> HealthResponse:
@@ -30,7 +33,7 @@ def health() -> HealthResponse:
             "n_features_expected": len(FEATURE_NAMES) if FEATURE_NAMES else None,
             "model_n_features_in_": getattr(MODEL, "n_features_in_", None),
             "feature_names": FEATURE_NAMES,
-        }
+        },
     )
 
 

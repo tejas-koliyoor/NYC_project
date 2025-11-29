@@ -5,8 +5,10 @@ import joblib
 
 DEFAULT_MODEL_PATH = os.getenv("MODEL_PATH", "artifacts/model.joblib")
 
+
 class ModelNotFound(Exception):
     pass
+
 
 @lru_cache(maxsize=1)
 def load_pipeline(path: str = DEFAULT_MODEL_PATH) -> Any:

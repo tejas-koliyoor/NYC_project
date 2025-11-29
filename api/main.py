@@ -31,6 +31,7 @@ PREDICTION_LATENCY = Histogram(
 
 # -------------------- HEALTH ENDPOINT --------------------
 
+
 @app.get("/health", response_model=HealthResponse)
 def health() -> HealthResponse:
     try:
@@ -55,6 +56,7 @@ def health() -> HealthResponse:
 
 # -------------------- PREDICT ENDPOINT --------------------
 
+
 @app.post("/predict", response_model=PredictResponse)
 def predict(payload: PredictRequest) -> PredictResponse:
     start_time = time.perf_counter()
@@ -70,9 +72,7 @@ def predict(payload: PredictRequest) -> PredictResponse:
         yhat = pipeline.predict(df)
 
         return PredictResponse(
-            predictions=[
-                Prediction(duration_min_predicted=float(v)) for v in yhat
-            ]
+            predictions=[Prediction(duration_min_predicted=float(v)) for v in yhat]
         )
 
     except Exception as exc:
@@ -85,6 +85,7 @@ def predict(payload: PredictRequest) -> PredictResponse:
 
 
 # -------------------- METRICS ENDPOINT --------------------
+
 
 @app.get("/metrics")
 def metrics():

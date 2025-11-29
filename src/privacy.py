@@ -28,7 +28,9 @@ PII_FIELD_NAMES = {
 
 # Regex patterns for accidental PII leakage
 EMAIL_REGEX = re.compile(r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+")
-PHONE_REGEX = re.compile(r"\b(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4}\b")
+PHONE_REGEX = re.compile(
+    r"\b(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4}\b"
+)
 
 
 def scrub_pii_from_dataframe(df: pd.DataFrame) -> pd.DataFrame:
@@ -48,12 +50,12 @@ def scrub_pii_from_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     # Mask email/phone from all string values
     for col in df.columns:
         if df[col].dtype == "object":
-            df[col] = df[col].astype(str).apply(
-                lambda x: EMAIL_REGEX.sub("[REDACTED_EMAIL]", x)
+            df[col] = (
+                df[col]
+                .astype(str)
+                .apply(lambda x: EMAIL_REGEX.sub("[REDACTED_EMAIL]", x))
             )
-            df[col] = df[col].apply(
-                lambda x: PHONE_REGEX.sub("[REDACTED_PHONE]", x)
-            )
+            df[col] = df[col].apply(lambda x: PHONE_REGEX.sub("[REDACTED_PHONE]", x))
 
     return df
 
