@@ -1,14 +1,21 @@
 # save_model.py — NYC Taxi baseline (trip duration regression)
-import os, joblib, numpy as np, pandas as pd
+
+import os
 from pathlib import Path
-from datetime import datetime
+
+import joblib
+import numpy as np
+import pandas as pd
+
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.impute import SimpleImputer
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
+
+
 
 # ---- 1) Load CSV (adapt path if needed) ----
 CSV_PATH = os.getenv("NYC_TAXI_CSV", "data/nyc_taxi_2025-03.csv")
