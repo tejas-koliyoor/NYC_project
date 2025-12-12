@@ -15,6 +15,32 @@ from sklearn.impute import SimpleImputer
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
 
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+
+cat_cols = ["store_and_fwd_flag", "payment_type", "RatecodeID"]
+num_cols = ["trip_distance", "fare_amount", "passenger_count",
+            "pickup_hour", "pickup_dow", "is_weekend",
+            "PULocationID", "DOLocationID"]
+
+cat_proc = Pipeline([
+    ("imputer", SimpleImputer(strategy="most_frequent")),
+    ("ohe", OneHotEncoder(handle_unknown="ignore"))
+])
+
+num_proc = Pipeline([
+    ("imputer", SimpleImputer(strategy="median")),
+    ("scaler", StandardScaler())
+])
+
+pre = ColumnTransformer([
+    ("num", num_proc, num_cols),
+    ("cat", cat_proc, cat_cols)
+])
+
+
+
 
 # ---- 1) Load CSV (adapt path if needed) ----
 CSV_PATH = os.getenv("NYC_TAXI_CSV", "data/nyc_taxi_2025-03.csv")
@@ -155,3 +181,4 @@ for c in list(example_record):
 example = {"records": [example_record]}
 pd.Series(example).to_json("artifacts/example_payload.json")
 print("[ok] Wrote artifacts/example_payload.json with one valid record")
+
