@@ -6,7 +6,6 @@ from pathlib import Path
 import joblib
 import numpy as np
 import pandas as pd
-
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
@@ -15,9 +14,6 @@ from sklearn.impute import SimpleImputer
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
 
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.compose import ColumnTransformer
-from sklearn.impute import SimpleImputer
 
 cat_cols = ["store_and_fwd_flag", "payment_type", "RatecodeID"]
 num_cols = ["trip_distance", "fare_amount", "passenger_count",

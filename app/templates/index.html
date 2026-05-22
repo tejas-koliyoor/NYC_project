@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NYC Taxi – Prediction Demo</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+    <div class="wrap">
+        <header class="header">
+            <h1>NYC Taxi – Prediction Demo</h1>
+            <p class="sub">
+                A Dockerized FastAPI inference service. Paste a request payload and click Predict.
+            </p>
+            <div class="badges">
+                <span class="badge">POST /predict</span>
+                <span class="badge">GET /health</span>
+                <span class="badge">GET /metrics</span>
+            </div>
+        </header>
+
+        <main class="grid">
+            <section class="card">
+                <div class="card-title">Request JSON</div>
+                <textarea id="json" spellcheck="false"></textarea>
+
+                <div class="row">
+                    <button id="loadExample" class="btn secondary">Load example payload</button>
+                    <button id="predict" class="btn">Predict</button>
+                </div>
+
+                <div class="hint">
+                    Tip: You can also use Swagger UI at <a href="/docs" target="_blank" rel="noreferrer">/docs</a>.
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-title">Response</div>
+                <pre id="out" class="out">(click “Predict”)</pre>
+
+                <div class="row">
+                    <button id="health" class="btn secondary">Check health</button>
+                    <a class="btn secondary" href="/metrics" target="_blank" rel="noreferrer">Open metrics</a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <span>Local demo UI • FastAPI • Docker</span>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+
+</html>

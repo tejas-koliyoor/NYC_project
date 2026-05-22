@@ -1,0 +1,133 @@
+:root {
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
+
+body {
+    margin: 0;
+    background: #0b0f19;
+    color: #e8eefc;
+}
+
+.wrap {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 28px 18px 40px;
+}
+
+.header h1 {
+    margin: 0 0 6px;
+    font-size: 28px;
+}
+
+.sub {
+    margin: 0 0 14px;
+    color: #b6c3e6;
+}
+
+.badges {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.badge {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.card-title {
+    font-weight: 650;
+    margin-bottom: 10px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 330px;
+    background: rgba(0, 0, 0, 0.35);
+    color: #e8eefc;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    padding: 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.45;
+    resize: vertical;
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    cursor: pointer;
+    border-radius: 12px;
+    padding: 10px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: #2a6df5;
+    color: white;
+    font-weight: 600;
+}
+
+.btn.secondary {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.btn:hover {
+    filter: brightness(1.05);
+}
+
+.out {
+    width: 100%;
+    min-height: 330px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    padding: 12px;
+    overflow: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.hint {
+    margin-top: 10px;
+    color: #b6c3e6;
+    font-size: 13px;
+}
+
+.hint a {
+    color: #9bb8ff;
+}
+
+.footer {
+    margin-top: 18px;
+    color: #b6c3e6;
+    font-size: 12px;
+    opacity: 0.9;
+}

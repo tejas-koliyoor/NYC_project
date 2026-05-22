@@ -39,3 +39,4 @@ kind load docker-image nyc-taxi-api:latest --name nyc-taxi
 kubectl apply -f k8s/deployment.yaml
 kubectl port-forward svc/nyc-taxi-api 8000:8000
 
+
