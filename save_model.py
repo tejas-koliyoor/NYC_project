@@ -39,7 +39,7 @@ pre = ColumnTransformer([
 
 
 # ---- 1) Load CSV (adapt path if needed) ----
-CSV_PATH = os.getenv("NYC_TAXI_CSV", "data/nyc_taxi_2025-03.csv")
+CSV_PATH = os.getenv("NYC_TAXI_CSV", "data\nyc_taxi_2025-03_updated_1200_rows.csv")
 df = pd.read_csv(CSV_PATH)
 
 # ---- 2) Normalize typical TLC column names ----

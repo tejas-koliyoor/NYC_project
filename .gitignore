@@ -1,9 +1,9 @@
-﻿>> # Python
+>> # Python
 >> __pycache__/
 >> *.pyc
 .venv/
 mlruns/data/*
-!data/nyc_taxi_2025-03.csv
+!data\nyc_taxi_2025-03_updated_1200_rows.csv
 *.env
 *.pem
 *.key

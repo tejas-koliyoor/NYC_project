@@ -6,7 +6,7 @@ Focus: demonstrate **data contracts → features → MLflow → FastAPI → Dock
 ## Quickstart
 ```bash
 pip install -r requirements.txt
-# (Later) python -m src.train data/nyc_taxi_sample.csv
+# (Later) python -m src.train data\nyc_taxi_2025-03_updated_1200_rows.csv
 uvicorn api.main:app --reload
 ```
 
